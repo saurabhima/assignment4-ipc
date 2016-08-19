@@ -1,4 +1,4 @@
-AASSIGNMENT 5: Introduction to Semaphore and IPC
+ASSIGNMENT 5: Introduction to Semaphore and IPC
 ===========================================================
 #CS 69001: Computing Lab 1
 #August 19, 2016
@@ -28,36 +28,49 @@ For each ice cream, there is a fixed sequence of tasks (i.e. first boil the milk
 
 Your job is to emulate this whole procedure using multiple processes and inter process com-munication.
 
+-------------------
 
 ##Problem:
 
 You need to develop an master-slave program. Master will assign tasks in job-queue and slave will perform tasks from the job-queue. Upon completion of a task, slave will inform master that it has finished the task, and then it looks at the queue for the next task.
 Figure 1 (See PDF)
 
+-------------------
+
 ##TASK 
 
 In your emulation, you can implement a task by giving a pause (sleep) for some specified duration. For example, for emulating “boiling water for 7 minutes”, the corresponding process sleeps for 7 minutes.
+
+-------------------
 
 ##JOB
 
 A job is an ordered list of tasks to be performed sequentially. It is the duty of the master program to put a job in appropriate slave to make it complete. Say, job vanillaice have ordered list of tasks as boilmilk7min followed by mix − vanilla.To complete a job vanillaice, master first have to put it to slave for boilmilk7min, then to mix − vanilla.
 
+-------------------
+
 ##Program: MASTER
 
 Master has two files: slave.inf o and job.inf o. Master first reads slave.info and spawns slave process as per described in slave.inf o.Then it loads jobs from job.info and stores in a list (use your favorite data-structure for list). Master will use this list repeatedly. Master then takes first n job and place them in job-queue. Each job contains multiple tasks in order. They have to be performed in order only. After that, whenever a single job finishes, master gets the next job and puts it to appropriate queue. When slave reports that it has completed the task, master again puts that job to another appropriate queue for the next task. After finishing m jobs, master will signal (using ipc or semaphore) every slave to terminate the process. And finally it terminate it-self. Master will give several outputs. We will discuss about output later.
+
+-------------------
 
 ##Program: SLAVE
 
 Slave runs different variant of tasks it can perform. It will set itself accordingly. Then it check corresponding job-queue if there is any task for it. If there is, it takes that job and start perform it. After finishing this task, slave informs the server that it has finished the task and move on. A slave can perform multiple variants of a task. But it cannot perform multiple tasks at a time.
 
+-------------------
+
 ##Input-Output
 
 For this assignment, you have to follow strict input-output format. Both master and slave take input as command line argument only. No input can be given via STDIN. 
 
+-------------------
+
 #MASTER
 
 Master program takes exactly 5 arguments as follows:
-#master '<path to slave.inf o file>1' <path to job.inf o file> <path to slave executable><n> <m>
+    master<path to slave.inf o file>1 <path to job.inf o file> <path to slave executable><n> <m>
 
 First argument is slave.inf o file. Second argument is job.inf o file. m is the number of job it have to perform before exiting. n ≤ m.
 
