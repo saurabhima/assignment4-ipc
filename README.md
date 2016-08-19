@@ -54,10 +54,10 @@ Slave runs different variant of tasks it can perform. It will set itself accordi
 
 For this assignment, you have to follow strict input-output format. Both master and slave take input as command line argument only. No input can be given via STDIN. 
 
-##MASTER
+#MASTER
 
-#Master program takes exactly 5 arguments as follows:
-master <path to slave.inf o file>1 <path to job.inf o file> <path to slave executable><n> <m>
+Master program takes exactly 5 arguments as follows:
+#master '<path to slave.inf o file>1' <path to job.inf o file> <path to slave executable><n> <m>
 
 First argument is slave.inf o file. Second argument is job.inf o file. m is the number of job it have to perform before exiting. n ≤ m.
 
