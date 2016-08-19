@@ -15,87 +15,69 @@ To efficiently share resources between different processes and avoid deadlocks.
 Mr. X owns a big ice cream factory. It manufactures thousands of different kind of ice
 creams daily. There are several steps to manufacture a single bar/scoop of ice cream from milk
 and other ingredients through a sequence of steps like boiling milk, mixing sugar and butter,
-freezing, wrapping etc. There are different machines to perform different types of tasks (i.e.
-boiler, mixer, freezer, wrapper). Mr. X owns multiple number of machines for each type of task.
-Each machine can perform several variants of tasks (i.e. boiler can boil milk as well as water,
-wrapper can wrap bar ice cream as well as Cornetto). But each machine can work with only one
-task at a time. So Mr. X puts same category machines in a row. He sets up a job-queue (assume
-unlimited buffer) for each row that contains the sequence of tasks that the machines of that
-row need to perform. Each machine takes a task from the job-queue and starts processing it. If
-there are no task in the job-queue, the machines of that row waits for next task to be assigned.
-Whenever there are multiple machines waiting, they will be assigned tasks based on “longest
-waiting time first” basis (the machine that is waiting most gets the first task to process when
-a new task arrives in the job queue). Each ice cream has a label that contains the sequence of
-the tasks to be performed to produce that ice cream. Machines will read this label and process
-accordingly.
-For each ice cream, there is a fixed sequence of tasks (i.e. first boil the milk for 7minutes,
-then mix vanilla powder & sugar, then freeze it, and at last pack it and wrap it). When a
-machine finishes a task for a ice cream, that partially produced ice cream is sent to a controller
-that puts it to an appropriate queue to perform the next task, or removes it from the factory if
-it has been processed completely. Mr. X puts the whole system in such a way so that he can
-input ice cream manufacturing procedure from a central location, and the machines will perform
-all the tasks accordingly.
-Your job is to emulate this whole procedure using multiple processes and inter process com-
-munication.
-1
-Problem:
-You need to develop an master-slave program. Master will assign tasks in job-queue and
-slave will perform tasks from the job-queue. Upon completion of a task, slave will inform master
-that it has finished the task, and then it looks at the queue for the next task.
-Figure 1: Caption
-TASK
-In your emulation, you can implement a task by giving a pause (sleep) for some specified
-duration. For example, for emulating “boiling water for 7 minutes”, the corresponding process
-sleeps for 7 minutes.
-JOB
-A job is an ordered list of tasks to be performed sequentially. It is the duty of the master
-program to put a job in appropriate slave to make it complete. Say, job vanillaice have ordered
-list of tasks as boilmilk7min followed by mix − vanilla.To complete a job vanillaice, master
-first have to put it to slave for boilmilk7min, then to mix − vanilla.
-2
-Program: MASTER
-Master has two files: slave.inf o and job.inf o. Master first reads slave.inf o and spawns
-slave process as per described in slave.inf o.Then it loads jobs from job.inf o and stores in a
-list (use your favorite data-structure for list). Master will use this list repeatedly. Master then
-takes first n job and place them in job-queue. Each job contains multiple tasks in order. They
-have to be performed in order only. After that, whenever a single job finishes, master gets the
-next job and puts it to appropriate queue. When slave reports that it has completed the task,
-master again puts that job to another appropriate queue for the next task. After finishing m
-jobs, master will signal (using ipc or semaphore) every slave to terminate the process. And
-finally it terminate it-self. Master will give several outputs. We will discuss about output later.
-Program: SLAVE
-Slave runs different variant of tasks it can perform. It will set itself accordingly. Then it
-check corresponding job-queue if there is any task for it. If there is, it takes that job and start
-perform it. After finishing this task, slave informs the server that it has finished the task and
-move on. A slave can perform multiple variants of a task. But it cannot perform multiple tasks
-at a time.
-Input-Output
-For this assignment, you have to follow strict input-output format. Both master and slave
-take input as command line argument only. No input can be given via ST DIN.
-MASTER
-Master program takes exactly 5 arguments as flows:
-$master <path to slave.inf o file>1 <path to job.inf o file> <path to slave executable>
-<n> <m>
-First argument is slave.inf o file. Second argument is job.inf o file. m is the number of job it
-have to perform before exiting. n ≤ m.
-File Format: slave.inf o
-This is a text file. Every line starts with the task category and slave count followed by
-task variant definition. Task variant is defined by variant name and the time it required (in
-millisecond) to perform. You have to wait this much time before you inform master about
-your status. There will be one or more task variants for each type of task. Format for a single
+freezing, wrapping etc. 
+
+There are different machines to perform different types of tasks (i.e. boiler, mixer, freezer, wrapper). Mr. X owns multiple number of machines for each type of task.Each machine can perform several variants of tasks (i.e. boiler can boil milk as well as water,wrapper can wrap bar ice cream as well as Cornetto). But each machine can work with only one task at a time. So Mr. X puts same category machines in a row. 
+
+He sets up a job-queue (assume unlimited buffer) for each row that contains the sequence of tasks that the machines of that
+row need to perform. Each machine takes a task from the job-queue and starts processing it. If there are no task in the job-queue, the machines of that row waits for next task to be assigned.
+
+Whenever there are multiple machines waiting, they will be assigned tasks based on “longest waiting time first” basis (the machine that is waiting most gets the first task to process when a new task arrives in the job queue). Each ice cream has a label that contains the sequence of the tasks to be performed to produce that ice cream. Machines will read this label and process accordingly.
+
+For each ice cream, there is a fixed sequence of tasks (i.e. first boil the milk for 7minutes, then mix vanilla powder & sugar, then freeze it, and at last pack it and wrap it). When a machine finishes a task for a ice cream, that partially produced ice cream is sent to a controller that puts it to an appropriate queue to perform the next task, or removes it from the factory if it has been processed completely. Mr. X puts the whole system in such a way so that he can input ice cream manufacturing procedure from a central location, and the machines will perform all the tasks accordingly.
+
+Your job is to emulate this whole procedure using multiple processes and inter process com-munication.
+
+
+##Problem:
+
+You need to develop an master-slave program. Master will assign tasks in job-queue and slave will perform tasks from the job-queue. Upon completion of a task, slave will inform master that it has finished the task, and then it looks at the queue for the next task.
+Figure 1 (See PDF)
+
+##TASK 
+
+In your emulation, you can implement a task by giving a pause (sleep) for some specified duration. For example, for emulating “boiling water for 7 minutes”, the corresponding process sleeps for 7 minutes.
+
+##JOB
+
+A job is an ordered list of tasks to be performed sequentially. It is the duty of the master program to put a job in appropriate slave to make it complete. Say, job vanillaice have ordered list of tasks as boilmilk7min followed by mix − vanilla.To complete a job vanillaice, master first have to put it to slave for boilmilk7min, then to mix − vanilla.
+
+##Program: MASTER
+
+Master has two files: slave.inf o and job.inf o. Master first reads slave.info and spawns slave process as per described in slave.inf o.Then it loads jobs from job.info and stores in a list (use your favorite data-structure for list). Master will use this list repeatedly. Master then takes first n job and place them in job-queue. Each job contains multiple tasks in order. They have to be performed in order only. After that, whenever a single job finishes, master gets the next job and puts it to appropriate queue. When slave reports that it has completed the task, master again puts that job to another appropriate queue for the next task. After finishing m jobs, master will signal (using ipc or semaphore) every slave to terminate the process. And finally it terminate it-self. Master will give several outputs. We will discuss about output later.
+
+##Program: SLAVE
+
+Slave runs different variant of tasks it can perform. It will set itself accordingly. Then it check corresponding job-queue if there is any task for it. If there is, it takes that job and start perform it. After finishing this task, slave informs the server that it has finished the task and move on. A slave can perform multiple variants of a task. But it cannot perform multiple tasks at a time.
+
+##Input-Output
+
+For this assignment, you have to follow strict input-output format. Both master and slave take input as command line argument only. No input can be given via STDIN. 
+
+##MASTER
+
+#Master program takes exactly 5 arguments as follows:
+master <path to slave.inf o file>1 <path to job.inf o file> <path to slave executable><n> <m>
+
+First argument is slave.inf o file. Second argument is job.inf o file. m is the number of job it have to perform before exiting. n ≤ m.
+
+#File Format: slave.inf o
+
+This is a text file. Every line starts with the task category and slave count followed by task variant definition. Task variant is defined by variant name and the time it required (in millisecond) to perform. You have to wait this much time before you inform master about your status. There will be one or more task variants for each type of task. Format for a single
 line in slave.info is as follows:
-<task-type> <count> <variant-name> <time> [<variant-name> <time> [<variant-name>
-<time> ...]]2
+><task-type> <count> <variant-name> <time> [<variant-name> <time> [<variant-name>
+><time> ...]]2
+
 task-type: Type of the task a group of slave can perform.
 count: Number of slave processes need to be for this type of task.
 variant-name: Variant of tasks, like boiling is a task. But boiling-water or boiling-milk is
 variants of that task type. Boiler a slave. There can be multiple (defined by count parameter)
 boiler slave. Every boiler slave can perform all variants of boiling task. But a slave can not boil
 two things at the same time.
-1
-2
-enclosed with <> means mandatory field/parameter/argument
-enclosed with [] means optional.
+1 enclosed with <> means mandatory field/parameter/argument
+2 enclosed with [] means optional.
+
+
 3
 time: Time required to performed the task. For emulation purpose, it will be in ms (millisec-
 ond).
